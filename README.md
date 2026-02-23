@@ -74,8 +74,8 @@ Submit a new piece of feedback.
 
 ```json
 {
-  "name": "Prince Kumar",
-  "email": "prince@example.com",
+    "name": "Srihari Tadala",
+    "email": "stadala@example.com",
   "message": "Loved the UI and the simplicity of this project!"
 }
 ```
@@ -114,8 +114,8 @@ Retrieve all stored feedback entries.
 [
   {
     "id": 1,
-    "name": "Prince Kumar",
-    "email": "prince@example.com",
+    "name": "Srihari Tadala",
+    "email": "stadala@example.com",
     "message": "Loved the UI!",
     "timestamp": "2025-10-14T10:20:30.000Z"
   }
