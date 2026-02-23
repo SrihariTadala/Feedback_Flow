@@ -1,0 +1,47 @@
+[
+  {
+    "id": "TC001",
+    "title": "post submit valid feedback",
+    "description": "Test POST /submit with valid name, email, and message fields to ensure the feedback is accepted, stored with an auto-incremented id and ISO timestamp, and a 200 success response is returned."
+  },
+  {
+    "id": "TC002",
+    "title": "post submit missing required fields",
+    "description": "Test POST /submit with missing required fields such as name, email, or message to verify the server returns a 400 error with appropriate validation error messages."
+  },
+  {
+    "id": "TC003",
+    "title": "post submit invalid email format",
+    "description": "Test POST /submit with an email field that does not contain an '@' character to confirm the server returns a 400 error indicating invalid email format."
+  },
+  {
+    "id": "TC004",
+    "title": "post submit whitespace only fields",
+    "description": "Test POST /submit with fields containing only whitespace to ensure the server returns a 400 error indicating empty or invalid fields."
+  },
+  {
+    "id": "TC005",
+    "title": "get feedbacks returns all stored feedbacks",
+    "description": "Test GET /feedbacks to verify it returns a 200 response with a JSON array of all stored feedback objects, each containing id, name, email, message, and timestamp."
+  },
+  {
+    "id": "TC006",
+    "title": "get feedbacks returns empty array when no submissions",
+    "description": "Test GET /feedbacks when the feedbacks.json file is empty or freshly initialized to confirm it returns a 200 response with an empty array or initial seed array."
+  },
+  {
+    "id": "TC007",
+    "title": "post submit concurrent requests id collision",
+    "description": "Test concurrent POST /submit requests to observe potential id collisions due to auto-increment logic and verify both requests succeed with 200 responses and entries are appended."
+  },
+  {
+    "id": "TC008",
+    "title": "get root serves frontend html",
+    "description": "Test GET / to ensure the server responds with 200 status and serves the static frontend files including index.html, script.js, and style.css."
+  },
+  {
+    "id": "TC009",
+    "title": "get nonexistent static asset returns 404",
+    "description": "Test GET request for a non-existent static asset to verify the server returns a 404 status indicating the asset is not found."
+  }
+]

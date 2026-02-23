@@ -1,0 +1,88 @@
+version: "2"
+type: backend
+tech_stack:
+  - language: JavaScript (Node.js)
+  - framework: Express.js
+  - storage: JSON file (feedbacks.json)
+  - frontend: HTML, CSS, Vanilla JS (Fetch API)
+routes:
+  - path: /submit
+    file: backend/routes/feedbackRoutes.js
+    auth_required: false
+    description: Accepts a POST request with name, email, and message fields; validates input and stores feedback to feedbacks.json
+  - path: /feedbacks
+    file: backend/routes/feedbackRoutes.js
+    auth_required: false
+    description: Returns all stored feedback entries as a JSON array
+  - path: /
+    file: backend/server.js
+    auth_required: false
+    description: Serves the static frontend (index.html) from the /frontend directory
+features:
+  - name: Submit Feedback
+    description: User submits name, email, and message via POST /submit; server validates and persists to feedbacks.json
+    files:
+      - backend/controllers/feedbackController.js
+      - backend/utils/fileHandler.js
+      - backend/data/feedbacks.json
+    entry_route: /submit
+    user_interactions:
+      - Send POST request with JSON body containing name, email, and message
+      - Receive 200 success response on valid data
+      - Receive 400 error response on missing or invalid fields
+    api_calls:
+      - method: POST
+        endpoint: /submit
+    auth_required: false
+  - name: Get All Feedbacks
+    description: Retrieve the full list of stored feedback entries via GET /feedbacks
+    files:
+      - backend/controllers/feedbackController.js
+      - backend/utils/fileHandler.js
+      - backend/data/feedbacks.json
+    entry_route: /feedbacks
+    user_interactions:
+      - Send GET request to /feedbacks
+      - Receive 200 response with JSON array of all feedback objects
+    api_calls:
+      - method: GET
+        endpoint: /feedbacks
+    auth_required: false
+  - name: Input Validation
+    description: Server-side validation ensures all three fields are present, non-empty, and that the email contains an @ character
+    files:
+      - backend/controllers/feedbackController.js
+    entry_route: /submit
+    user_interactions:
+      - Send POST with missing name/email/message — expect 400 with error message
+      - Send POST with invalid email (no @) — expect 400 with error message
+      - Send POST with whitespace-only fields — expect 400 with error message
+    api_calls:
+      - method: POST
+        endpoint: /submit
+    auth_required: false
+  - name: JSON Data Persistence
+    description: Each valid submission is appended to backend/data/feedbacks.json with an auto-incremented ID and ISO timestamp
+    files:
+      - backend/utils/fileHandler.js
+      - backend/data/feedbacks.json
+    entry_route: /submit
+    user_interactions:
+      - Submit valid feedback via POST /submit
+      - Verify new entry appears in GET /feedbacks response
+    api_calls:
+      - method: POST
+        endpoint: /submit
+      - method: GET
+        endpoint: /feedbacks
+    auth_required: false
+known_limitations:
+  - issue: No authentication — any client can read or write all feedbacks
+    location: backend/server.js
+    impact: All feedback data is publicly accessible
+  - issue: Auto-increment ID uses last item index; concurrent writes could produce duplicate IDs
+    location: backend/controllers/feedbackController.js
+    impact: Low risk at single-user localhost scale; not safe for concurrent production use
+  - issue: Feedback entries cannot be updated or deleted via the API (no PUT/DELETE routes)
+    location: backend/routes/feedbackRoutes.js
+    impact: Submitted data is append-only

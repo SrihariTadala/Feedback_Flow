@@ -1,0 +1,19 @@
+{
+  "name": "feedback-collector",
+  "version": "1.0.0",
+  "description": "A full-stack feedback collection app with Node.js/Express backend and HTML/CSS/JS frontend.",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Submit feedback or bug reports easily with Feedback Flow." />
+  <title>Feedback Flow – Share Your Thoughts</title>
+
+  <!-- Google Fonts – Inter for clean, modern typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ====================================================================
+       Page wrapper – centres content and provides overall page padding
+  ===================================================================== -->
+  <div class="page-wrapper">
+
+    <!-- ── Site header ───────────────────────────────────────────────── -->
+    <header class="site-header">
+      <a class="logo" href="/">
+        <span class="logo-icon" aria-hidden="true">💬</span>
+        Feedback Flow
+      </a>
+      <p class="tagline">Share your thoughts, ideas, and bug reports.</p>
+    </header>
+
+    <!-- ── Feedback submission card ─────────────────────────────────── -->
+    <main>
+      <section class="card" aria-labelledby="formTitle">
+        <h1 class="card__title" id="formTitle">Submit Feedback</h1>
+        <p class="card__subtitle">
+          All fields are required. Your feedback helps us improve.
+        </p>
+
+        <!-- Alert / status banner (hidden by default) -->
+        <div
+          id="alertBox"
+          class="alert"
+          role="alert"
+          aria-live="polite"
+        ></div>
+
+        <!-- Feedback form -->
+        <form
+          id="feedbackForm"
+          class="feedback-form"
+          novalidate
+          aria-label="Feedback submission form"
+        >
+
+          <!-- Name field -->
+          <div class="form-group">
+            <label for="name">
+              Full Name <span class="required-star" aria-hidden="true">*</span>
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="e.g. Prince Kumar"
+              autocomplete="name"
+              required
+              aria-required="true"
+            />
+          </div>
+
+          <!-- Email field -->
+          <div class="form-group">
+            <label for="email">
+              Email Address <span class="required-star" aria-hidden="true">*</span>
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="e.g. prince@example.com"
+              autocomplete="email"
+              required
+              aria-required="true"
+            />
+          </div>
+
+          <!-- Message / feedback body -->
+          <div class="form-group">
+            <label for="message">
+              Message <span class="required-star" aria-hidden="true">*</span>
+            </label>
+            <textarea
+              id="message"
+              name="message"
+              placeholder="Write your feedback or bug report here…"
+              rows="5"
+              required
+              aria-required="true"
+            ></textarea>
+          </div>
+
+          <!-- Submit button with inline loading spinner -->
+          <button
+            type="submit"
+            id="submitBtn"
+            class="btn-submit"
+            aria-label="Submit feedback"
+          >
+            <span class="spinner" aria-hidden="true"></span>
+            <span class="btn-label">Submit Feedback</span>
+          </button>
+
+        </form>
+      </section>
+
+      <!-- ── Submitted feedbacks list ────────────────────────────────── -->
+      <section
+        class="feedbacks-section"
+        aria-labelledby="feedbacksTitle"
+      >
+        <div class="feedbacks-section__header">
+          <h2 class="feedbacks-section__title" id="feedbacksTitle">
+            All Feedback
+            <!-- Badge shows total count, updated dynamically by JS -->
+            <span
+              id="feedbackCount"
+              class="badge"
+              aria-label="Total feedback count"
+            >0</span>
+          </h2>
+
+          <!-- Refresh button lets the user manually re-fetch feedbacks -->
+          <button
+            id="refreshBtn"
+            class="btn-refresh"
+            type="button"
+            aria-label="Refresh feedback list"
+          >
+            ↻ Refresh
+          </button>
+        </div>
+
+        <!-- Feedback cards are injected here by script.js -->
+        <div
+          id="feedbackList"
+          class="feedback-list"
+          aria-live="polite"
+        >
+          <!-- Loading placeholder shown until first fetch completes -->
+          <div class="empty-state">
+            <div class="empty-state__icon">⏳</div>
+            <p>Loading feedbacks…</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+  </div><!-- /.page-wrapper -->
+
+  <!-- ── Footer ─────────────────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <p>Feedback Flow &copy; 2026 &mdash; Built with Node.js &amp; Express</p>
+  </footer>
+
+  <!-- Load the client-side script last so DOM is fully parsed -->
+  <script src="script.js"></script>
+</body>
+</html>

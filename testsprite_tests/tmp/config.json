@@ -1,0 +1,17 @@
+{
+  "status": "commited",
+  "type": "backend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:3000",
+  "executionArgs": {
+    "projectName": "feedback-collector",
+    "projectPath": "/Users/tadala/Vibecode/feedback-collector",
+    "testIds": [],
+    "additionalInstruction": "",
+    "envs": {
+      "API_KEY": "sk-user-wA0Kl4eJI5fFPwzO6jb--qbZCbgcbXVFPkbe7FryjaBrvN5Ed_JhP7ud5Gb6wDMHeq0pxITiUAq79T8i980shBDUqVBPNeLDMEbMGe2_UEmRp1q7KqgeSHaN2i_5Y_ziyIg"
+    }
+  },
+  "serverPort": 59822,
+  "proxy": "http://dcc21201-7d11-4d21-9052-356157e5f52e:NwFc9z7DLAdPhXI1U9yHwrwWgUej6HYQ@tun.testsprite.com:8080"
+}
