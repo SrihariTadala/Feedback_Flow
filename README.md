@@ -2,9 +2,9 @@
 
 A simple full-stack web application that allows users (students, testers, or developers) to submit feedback or bug reports for their projects.
 
-##Live link - https://feedback-collector-omega-lovat.vercel.app
+#Live link - https://feedback-collector-omega-lovat.vercel.app
 
-## Features
+#Features
 
 - **Feedback form** – Submit name, email, and a message via a clean UI.
 - **REST API** – Two endpoints (`POST /submit`, `GET /feedbacks`) built with Express.
