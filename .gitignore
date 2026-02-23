@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Local environment variables – NEVER commit this file
+# Copy .env.example → .env and fill in your values
+.env
+
+# macOS system files
+.DS_Store
+
+# Editor / IDE folders
+.vscode/
+.idea/
+
+# Vercel build output
+.vercel/
+
+# Logs
+*.log
+npm-debug.log*
+.vercel

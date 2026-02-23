@@ -3,23 +3,28 @@
  *
  * Contains the business logic for every feedback-related route.
  * Controllers receive the validated request, interact with the
- * data layer (fileHandler), and send a structured JSON response
+ * data layer (MongoDB via db.js), and send a structured JSON response
  * back to the client.
+ *
+ * Both handlers are async because MongoDB operations are Promise-based.
  */
 
-const { readFeedbacks, writeFeedbacks } = require("../utils/fileHandler");
+const { connectDB } = require("../utils/db");
+
+/** Name of the MongoDB collection that stores feedback documents. */
+const COLLECTION_NAME = "feedbacks";
 
 /**
  * POST /submit
  *
- * Validates the incoming feedback payload, generates a unique ID
- * and timestamp, appends the entry to the JSON file, then returns
+ * Validates the incoming feedback payload, generates a sequential ID
+ * and timestamp, inserts the document into MongoDB, then returns
  * a success confirmation to the client.
  *
  * @param {import('express').Request}  req
  * @param {import('express').Response} res
  */
-function submitFeedback(req, res) {
+async function submitFeedback(req, res) {
   const { name, email, message } = req.body;
 
   // --- Input validation ---------------------------------------------------
@@ -53,57 +58,79 @@ function submitFeedback(req, res) {
     });
   }
 
-  // --- Build and persist the feedback entry -------------------------------
+  // --- Build and persist the feedback entry in MongoDB --------------------
 
-  const existingFeedbacks = readFeedbacks();
+  try {
+    const db         = await connectDB();
+    const collection = db.collection(COLLECTION_NAME);
 
-  // Auto-increment ID based on the current number of entries
-  const newId = existingFeedbacks.length > 0
-    ? existingFeedbacks[existingFeedbacks.length - 1].id + 1
-    : 1;
+    // Derive a sequential ID from the current document count.
+    // countDocuments() is an atomic read on the server side, which is
+    // significantly safer than reading the last array item as fileHandler
+    // previously did (still not collision-proof under high concurrency,
+    // but acceptable for this project's single-user scale).
+    const count = await collection.countDocuments();
 
-  const newFeedback = {
-    id:        newId,
-    name:      trimmedName,
-    email:     trimmedEmail,
-    message:   trimmedMessage,
-    timestamp: new Date().toISOString(),
-  };
+    const newFeedback = {
+      id:        count + 1,
+      name:      trimmedName,
+      email:     trimmedEmail,
+      message:   trimmedMessage,
+      timestamp: new Date().toISOString(),
+    };
 
-  console.log(`New feedback received from ${trimmedName}`);
+    console.log(`New feedback received from ${trimmedName}`);
 
-  const updatedFeedbacks = [...existingFeedbacks, newFeedback];
-  const saveSuccess      = writeFeedbacks(updatedFeedbacks);
+    // insertOne stores the document; MongoDB adds an internal _id automatically
+    await collection.insertOne(newFeedback);
 
-  if (!saveSuccess) {
+    console.log("Feedback stored successfully in MongoDB Atlas");
+
+    return res.status(200).json({
+      status:  "success",
+      message: "Feedback submitted successfully!",
+    });
+
+  } catch (error) {
+    console.error("Database error on POST /submit:", error.message);
     return res.status(500).json({
-      status: "error",
+      status:  "error",
       message: "Failed to save feedback. Please try again later.",
     });
   }
-
-  console.log("Feedback stored successfully in data/feedbacks.json");
-
-  return res.status(200).json({
-    status:  "success",
-    message: "Feedback submitted successfully!",
-  });
 }
 
 /**
  * GET /feedbacks
  *
- * Reads all stored feedback entries from the JSON file and
- * returns them as a JSON array. Returns an empty array when
- * no feedback has been submitted yet.
+ * Retrieves all stored feedback entries from MongoDB and returns them
+ * as a JSON array sorted by ascending ID.
+ * Returns an empty array when no feedback has been submitted yet.
  *
  * @param {import('express').Request}  req
  * @param {import('express').Response} res
  */
-function getAllFeedbacks(req, res) {
-  const feedbacks = readFeedbacks();
+async function getAllFeedbacks(req, res) {
+  try {
+    const db         = await connectDB();
+    const collection = db.collection(COLLECTION_NAME);
 
-  return res.status(200).json(feedbacks);
+    // Exclude MongoDB's internal _id field from the response so the API
+    // output matches the original file-based format exactly.
+    const feedbacks = await collection
+      .find({}, { projection: { _id: 0 } })
+      .sort({ id: 1 })
+      .toArray();
+
+    return res.status(200).json(feedbacks);
+
+  } catch (error) {
+    console.error("Database error on GET /feedbacks:", error.message);
+    return res.status(500).json({
+      status:  "error",
+      message: "Failed to retrieve feedbacks. Please try again later.",
+    });
+  }
 }
 
 module.exports = { submitFeedback, getAllFeedbacks };
